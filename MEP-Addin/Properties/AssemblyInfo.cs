@@ -7,12 +7,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MEP_Addin")]
-[assembly: AssemblyDescription("Add-ins for BIM - Revit with WPF interface")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("https://revitapivietnam.com")]
-[assembly: AssemblyProduct("Q'Apps - BIM Tools for Revit")]
-[assembly: AssemblyCopyright("Copyright 2017-2020 © Dang Le Quan, contact@revitapivietnam.com")]
-[assembly: AssemblyTrademark("https://revitapivietnam.com/revitapi-course-pro/")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("")]
+[assembly: AssemblyCopyright("")]
+[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
