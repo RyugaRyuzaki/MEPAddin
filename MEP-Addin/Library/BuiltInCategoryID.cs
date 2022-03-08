@@ -10,5 +10,6 @@ namespace MEP_Addin.Library
     {
         public static BuiltInCategory PlumbingFixtureID = (BuiltInCategory)(-2001160);
         public static BuiltInCategory PileID = (BuiltInCategory)(-2008044);
+        public static BuiltInCategory PileFittingID = (BuiltInCategory)(-2008049);
     }
 }

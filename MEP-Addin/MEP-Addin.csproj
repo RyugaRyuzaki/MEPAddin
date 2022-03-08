@@ -64,9 +64,15 @@
     <Compile Include="Command\ConnectPileToPlumbingFixtures.cs" />
     <Compile Include="Library\BuiltInCategoryID.cs" />
     <Compile Include="Library\BuiltInParameterID.cs" />
+    <Compile Include="Library\CalculatePipeLocation.cs" />
+    <Compile Include="Library\ConnectorProcess.cs" />
+    <Compile Include="Library\FilterPipe.cs" />
     <Compile Include="Library\FilterPlumbingFixtures.cs" />
     <Compile Include="Library\GetPipeType.cs" />
+    <Compile Include="Library\PipeFittingType.cs" />
     <Compile Include="Library\PlumbingFixturesType.cs" />
+    <Compile Include="Library\PointModel.cs" />
+    <Compile Include="Model\PlumbingFixtureModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

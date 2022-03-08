@@ -1,23 +1,23 @@
-﻿using System;
+﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.UI.Selection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Autodesk.Revit.DB;
-using Autodesk.Revit.UI.Selection;
-    
+
 namespace MEP_Addin.Library
 {
-   public class FilterPlumbingFixtures : ISelectionFilter
+    public class FilterPipe : ISelectionFilter
     {
         public Document Doc { get; set; }
-        public FilterPlumbingFixtures(Document document)
+        public FilterPipe(Document document)
         {
             Doc = document;
         }
         public bool AllowElement(Element elem)
         {
-            return( elem.Category.Name.Equals(Category.GetCategory(Doc, BuiltInCategoryID.PlumbingFixtureID).Name)&&(!elem.get_Parameter(BuiltInParameterID.SystemClassification).AsString().Equals("")));
+            return (elem.Category.Name.Equals(Category.GetCategory(Doc, BuiltInCategoryID.PileID).Name) );
         }
 
         public bool AllowReference(Reference reference, XYZ position)
