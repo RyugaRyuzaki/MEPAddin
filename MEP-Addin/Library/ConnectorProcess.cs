@@ -42,10 +42,11 @@ namespace MEP_Addin.Library
             foreach (var item in connectorSet)
             {
                 Connector connector1 = item as Connector;
-                if (connector1 != null && PointModel.AreEqualXYZ(connector1.Origin, xYZ)) connector = connector1;
+                if (connector1 != null && PointModel.AreEqual(connector1.Origin.DistanceTo(xYZ),0)) connector = connector1;
             }
             return connector;
         }
+        
         public static PipeSystemType GetPipeSystemType(Pipe pipe)
         {
             List<Connector> connectors = new List<Connector>();

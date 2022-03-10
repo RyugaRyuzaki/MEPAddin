@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{46295B11-28BC-43BB-A164-8F6FF36323D7}</ProjectGuid>
+    <ProjectGuid>{EB678D3E-8091-4526-BD44-8372EB3259D5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MEP_Addin</RootNamespace>
-    <AssemblyName>MEP-Addin</AssemblyName>
+    <RootNamespace>SettingMEP</RootNamespace>
+    <AssemblyName>SettingMEP</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <StartAction>Program</StartAction>
     <StartProgram>$(ProgramW6432)\Autodesk\Revit 2020\Revit.exe</StartProgram>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,18 +34,21 @@
     <WarningLevel>4</WarningLevel>
     <StartAction>Program</StartAction>
     <StartProgram>$(ProgramW6432)\Autodesk\Revit 2020\Revit.exe</StartProgram>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RevitAPI, Version=21.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="RevitAPI">
       <HintPath>C:\Program Files\Autodesk\Revit 2021\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="RevitAPIUI, Version=21.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="RevitAPIUI">
       <HintPath>C:\Program Files\Autodesk\Revit 2021\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -54,6 +58,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -61,24 +69,27 @@
     <Reference Include="System.Management" />
     <Reference Include="WpfCustomControls">
       <HintPath>..\..\..\Confused\2021\WpfCustomControls.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command\ConnectPileToPlumbingFixtures.cs" />
-    <Compile Include="Library\BuiltInCategoryID.cs" />
-    <Compile Include="Library\BuiltInParameterID.cs" />
-    <Compile Include="Library\CalculatePipeLocation.cs" />
-    <Compile Include="Library\ConnectorProcess.cs" />
-    <Compile Include="Library\FilterPipe.cs" />
-    <Compile Include="Library\FilterPlumbingFixtures.cs" />
-    <Compile Include="Library\GetPipeType.cs" />
-    <Compile Include="Library\PipeFittingType.cs" />
-    <Compile Include="Library\PlumbingFixturesType.cs" />
-    <Compile Include="Library\PointModel.cs" />
-    <Compile Include="Model\PlumbingFixtureModel.cs" />
+    <Compile Include="Command\ShowSettingMEP.cs" />
+    <Compile Include="Library\DrawMainCanvas.cs" />
+    <Compile Include="Model\Languages.cs" />
+    <Compile Include="Model\SaveModel.cs" />
+    <Compile Include="ViewModel\SettingMEPViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\SettingMEPWindow.xaml.cs">
+      <DependentUpon>SettingMEPWindow.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Page Include="View\SettingMEPWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

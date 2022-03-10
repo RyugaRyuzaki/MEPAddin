@@ -1,0 +1,120 @@
+﻿<Window x:Name="MainWindow" x:Class="SettingMEP.SettingMEPWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:custom="clr-namespace:WpfCustomControls.CustomControls;assembly=WpfCustomControls"
+        xmlns:customViewModel="clr-namespace:WpfCustomControls.ViewModel;assembly=WpfCustomControls"
+        Title="SettingMEP" 
+        ResizeMode="NoResize" 
+        ShowInTaskbar="True" 
+        WindowStartupLocation="CenterScreen"
+        Height="320" Width="480"
+        Topmost="false"
+        FontSize="11"
+        FontFamily="Tahoma"
+        Background="White"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadWindowCommand}" CommandParameter="{Binding ElementName=MainWindow}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/WpfCustomControls;component/Resource/Styles.xaml"></ResourceDictionary>
+                <ResourceDictionary>
+                    <DataTemplate x:Name="taskBarViewModel" DataType="{x:Type customViewModel:TaskBarViewModel}">
+                        <custom:TaskBarControl></custom:TaskBarControl>
+                    </DataTemplate>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+  <Grid Margin="0">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <ContentControl Content="{Binding TaskBarViewModel}"></ContentControl>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="300"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <GroupBox Grid.Column="0" Margin="5" Header="{Binding Languages.DimensionSetting,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                    <StackPanel>
+                        <ListView x:Name="Menu" SelectedIndex="{Binding SelectedMenu,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding SelectionMenuCommand}" CommandParameter="{Binding ElementName=MainWindow}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListViewItem >
+                                <TextBlock Text="{Binding Languages.SlantedDimension,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontSize="13"></TextBlock>
+                            </ListViewItem>
+                            <ListViewItem >
+                                <TextBlock Text="{Binding Languages.TeeAndElbow,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" FontSize="13"></TextBlock>
+                            </ListViewItem>
+                            
+                        </ListView>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"></RowDefinition>
+                                <RowDefinition Height="35"></RowDefinition>
+                                <RowDefinition Height="35"></RowDefinition>
+                                <RowDefinition Height="35"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="S1" Style="{StaticResource DataGridTextBlockCenter}" Visibility="{Binding Path=SlantedVisibility,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBlock>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SaveModel.S1,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" Visibility="{Binding Path=SlantedVisibility,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBox>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="D1" Style="{StaticResource DataGridTextBlockCenter}" Visibility="{Binding Path=TeeElbowVisibility,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBlock>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SaveModel.D1,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" Visibility="{Binding Path=TeeElbowVisibility,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBox>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="Ф" Style="{StaticResource DataGridTextBlockCenter}"></TextBlock>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="S2" Style="{StaticResource DataGridTextBlockCenter}" Visibility="{Binding Path=SlantedVisibility,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBlock>
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SaveModel.S2,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" Visibility="{Binding Path=SlantedVisibility,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBox>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="D2" Style="{StaticResource DataGridTextBlockCenter}" Visibility="{Binding Path=TeeElbowVisibility,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBlock>
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SaveModel.D2,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" Visibility="{Binding Path=TeeElbowVisibility,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"></TextBox>
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="Ф" Style="{StaticResource DataGridTextBlockCenter}"></TextBlock>
+                            <DockPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" LastChildFill="False">
+                               
+                            </DockPanel> 
+                            <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" LastChildFill="False">
+
+                               
+                            </DockPanel>
+                            
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+                <Canvas Grid.Column="1" x:Name="MainCanvas">
+                    <!--<Rectangle Width="300" Height="240"></Rectangle>-->
+                </Canvas>
+                
+            </Grid>
+            <DockPanel Grid.Row="2" Margin="0" LastChildFill="False">
+                <Button DockPanel.Dock="Right" Width="60" Style="{StaticResource ButtonModifyStyle}" Content="{Binding Languages.Save,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=MainWindow}"></Button>
+                <Button DockPanel.Dock="Right" Width="60" Style="{StaticResource ButtonModifyStyle}" Content="{Binding Languages.Open,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Command="{Binding OpenCommand}" CommandParameter="{Binding ElementName=MainWindow}"></Button>
+                
+                <Button DockPanel.Dock="Right" Width="80" Style="{StaticResource ButtonModifyStyle}" Visibility="{Binding Path=LoadFamilyVisibility,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Content="{Binding Languages.LoadFamily,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Command="{Binding LoadFamilyCommand}" CommandParameter="{Binding ElementName=MainWindow}"></Button>
+            </DockPanel>
+        </Grid>
+      
+    </Grid>
+</Window>

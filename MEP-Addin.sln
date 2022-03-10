@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.1778
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MEP-Addin", "MEP-Addin\MEP-Addin.csproj", "{46295B11-28BC-43BB-A164-8F6FF36323D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingMEP", "SettingMEP\SettingMEP.csproj", "{EB678D3E-8091-4526-BD44-8372EB3259D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{46295B11-28BC-43BB-A164-8F6FF36323D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46295B11-28BC-43BB-A164-8F6FF36323D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46295B11-28BC-43BB-A164-8F6FF36323D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB678D3E-8091-4526-BD44-8372EB3259D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB678D3E-8091-4526-BD44-8372EB3259D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB678D3E-8091-4526-BD44-8372EB3259D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB678D3E-8091-4526-BD44-8372EB3259D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

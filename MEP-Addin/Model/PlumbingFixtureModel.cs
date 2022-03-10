@@ -1,5 +1,7 @@
 ﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.DB.Plumbing;
+using Autodesk.Revit.DB.Structure;
 using MEP_Addin.Library;
 using System;
 using System.Collections.Generic;
@@ -8,16 +10,17 @@ namespace MEP_Addin
 {
     public class PlumbingFixtureModel
     {
-        private static readonly int Start = 4, Mid = 3, End = 3,Top=2;
+        
+        public int Start { get; set; }
+        public int Mid { get; set; }
+        public int End { get; set; }
+        public int Top { get; set; }
         public Element PlumbingFixture { get; set; }
         public Pipe Down { get; set; }
         public Pipe DownElbow { get; set; }
         public Pipe Branch { get; set; }
         public Pipe BranchElbow { get; set; }
-        public FamilyInstance ElbowUPDown { get; set; }
-        public FamilyInstance ElbowDownBranch { get; set; }
-        public FamilyInstance ElbowBranchElbow { get; set; }
-        public FamilyInstance TeeElbowMain { get; set; }
+        
         public double Diameter { get; set; }
         public double DiameterMain { get; set; }
         public double Slope { get; set; }
@@ -29,31 +32,23 @@ namespace MEP_Addin
         public XYZ VectorNormal { get; set; }
         public bool CanCreate { get; set; }
         public XYZ Origin { get; set; }
-        public Connector ConnectorOrigin { get; set; }
-        public List<Connector> ConnectorDown { get; set; } = new List<Connector>();
-        public List<Connector> ConnectorDownElbow { get; set; } = new List<Connector>();
-        public List<Connector> ConnectorBranch { get; set; } = new List<Connector>();
-        public List<Connector> ConnectorBranchElbow { get; set; } = new List<Connector>();
+      
+        public List<Pipe> Pipes { get; set; } = new List<Pipe>();
+        public List<XYZ> AllPoints { get; set; } = new List<XYZ>();
+
 
         public PlumbingFixtureModel(Element plumbingFixture, Pipe pipe)
         {
             PlumbingFixture = plumbingFixture;
+            Start = 3; Mid = 2; End = 2; Top = 2;
             GetConnectorPipe(pipe);
-            GetConnectorOrigin(pipe);
             VectorNormal = GetVectorNormal(pipe);
             GetAllPoint(pipe);
+           
         }
-
-        
 
         #region GetProperty
-        private void GetConnectorOrigin(Pipe pipe)
-        {
-            PipeSystemType pipeSystemPipe = ConnectorProcess.GetPipeSystemType(pipe);
-            PipeSystemType pipeSystemPlumbingFixture = ConnectorProcess.GetPipeSystemTypePlumbingFixture(PlumbingFixture);
-            ConnectorOrigin = ConnectorProcess.GetConnectorsPlumbingFixture(PlumbingFixture).Where(x => x.PipeSystemType == pipeSystemPlumbingFixture).FirstOrDefault();
-        }
-
+       
         public void GetConnectorPipe(Pipe pipe)
         {
             DiameterMain = pipe.get_Parameter(BuiltInParameterID.DiameterPipeID).AsDouble();
@@ -71,41 +66,17 @@ namespace MEP_Addin
                 Diameter = 0;
                 Origin = null;
             }
-           
-           
-
         }
         private void GetAllPoint(Pipe pipe)
         {
             XYZBranchElbow = GetXYZBranchElbow(pipe);
+           
             XYZBranch = GetXYZBranch(pipe);
             XYZDownElbow = GetXYZDownElbow(pipe);
             XYZDown = GetXYZDown(pipe);
-            CanCreate = (Origin != null) && (ConditionDistance(pipe)) && (ConditionHeight(pipe));
+            CanCreate = (Origin != null) && (ConditionDistance(pipe)) && (ConditionHeight(pipe)&&(ConditionXYZBranchElbow(pipe)));
         }
-        private void GetAllConnector()
-        {
-            if (BranchElbow != null)
-            {
-                ConnectorBranchElbow.Add(ConnectorProcess.GetConnectorPipe(BranchElbow, XYZBranchElbow));
-                ConnectorBranchElbow.Add(ConnectorProcess.GetConnectorPipe(BranchElbow, XYZBranch));
-            }
-            if (Branch != null)
-            {
-                ConnectorBranch.Add(ConnectorProcess.GetConnectorPipe(Branch, XYZBranch));
-                ConnectorBranch.Add(ConnectorProcess.GetConnectorPipe(Branch, XYZDownElbow));
-            }
-            if (DownElbow != null)
-            {
-                ConnectorDownElbow.Add(ConnectorProcess.GetConnectorPipe(DownElbow, XYZDownElbow));
-                ConnectorDownElbow.Add(ConnectorProcess.GetConnectorPipe(DownElbow, XYZDown));
-            }
-            if (Down != null)
-            {
-                ConnectorDown.Add(ConnectorProcess.GetConnectorPipe(Down, XYZDown));
-                ConnectorDown.Add(ConnectorProcess.GetConnectorPipe(Down, Origin));
-            }
-        }
+      
         #endregion
 
         #region ConditionCreate
@@ -119,9 +90,14 @@ namespace MEP_Addin
             double distance = GetDistance(pipe);
             return ((Math.Abs(Origin.Z-XYZBranchElbow.Z)) > (Slope*(Start*Math.Sqrt(2)+Mid)*Diameter+(Top+End)*Diameter))&&(Origin.Z>XYZBranch.Z);
         }
-        
+        private bool ConditionXYZBranchElbow(Pipe pipe)
+        {
+            Line line = (pipe.Location as LocationCurve).Curve as Line;
+            XYZ vec = XYZBranchElbow - line.GetEndPoint(0);
+            return (vec.AngleTo(line.Direction)<Math.PI*0.5);
+        }
         #endregion
-        #region AllPoint
+        #region AllPoint Option1     
 
         private XYZ GetXYZBranchElbow(Pipe pipe)
         {
@@ -131,6 +107,12 @@ namespace MEP_Addin
             XYZ p0 = PointModel.ProjectToLine(p1, line);
             XYZ min = MInPointPipe(pipe);
             return p0 + XYZ.BasisZ * Slope * (min.DistanceTo(p0))- direction * Start*Diameter;
+        }
+        private XYZ GetXYZBranchElbowReplace(Pipe pipe)
+        {
+            Line line = GetLineProjectOfPipe(pipe);
+            XYZ direction = GetDirectionLineProject(pipe, line);
+            return XYZBranchElbow + VectorNormal *  Diameter + direction * Diameter + XYZ.BasisZ * Slope *  Diameter * Math.Sqrt(2);
         }
         private XYZ GetXYZBranch(Pipe pipe)
         {
@@ -232,7 +214,7 @@ namespace MEP_Addin
             return Line.CreateBound(p0A, p1A);
         }
       
-        private XYZ GetVectorNormal(Pipe pipe)
+        public XYZ GetVectorNormal(Pipe pipe)
         {
             Line line = GetLineProjectOfPipe(pipe);
             XYZ p1 = GetOriginProjectMinPlan(pipe);
@@ -251,6 +233,22 @@ namespace MEP_Addin
             Line line1 = Line.CreateBound(p0, p1);
             return line1.Direction;
         }
+        private XYZ StartXYZPipe(Pipe pipe)
+        {
+            Line line = (pipe.Location as LocationCurve).Curve as Line;
+            double d0 = (line.Length);
+            double d1 = XYZBranchElbow.DistanceTo(line.GetEndPoint(0));
+            double d2 = XYZBranchElbow.DistanceTo(line.GetEndPoint(1));
+            if (PointModel.AreEqual(d1+d2,d0))
+            {
+                return (PointModel.AreEqualXYZ(XYZBranchElbow, line.GetEndPoint(0))) ? line.GetEndPoint(1) : line.GetEndPoint(0);
+            }
+            else
+            {
+                return ((PointModel.AreEqual(Slope, 0)) ? (line.GetEndPoint(0)) : ((line.GetEndPoint(0).Z > line.GetEndPoint(1).Z) ? (line.GetEndPoint(1)) : (line.GetEndPoint(0))));
+            }
+
+        }
         #endregion
         #region Create
         
@@ -267,10 +265,10 @@ namespace MEP_Addin
             {
                 if (CanCreate)
                 {
-                    BranchElbow = Pipe.Create(document, elementId, pipeType.Id, level.Id, XYZBranchElbow, XYZBranch); SetDiameter(BranchElbow);
-                    Branch = Pipe.Create(document, elementId, pipeType.Id, level.Id, XYZBranch, XYZDownElbow); SetDiameter(Branch);
-                    DownElbow = Pipe.Create(document, elementId, pipeType.Id, level.Id, XYZDownElbow, XYZDown); SetDiameter(DownElbow);
-                    Down = Pipe.Create(document, elementId, pipeType.Id, level.Id, XYZDown, Origin); SetDiameter(Down);
+                    BranchElbow = Pipe.CreatePlaceholder(document, elementId, pipeType.Id, level.Id, XYZBranchElbow, XYZBranch); SetDiameter(BranchElbow);
+                    Branch = Pipe.CreatePlaceholder(document, elementId, pipeType.Id, level.Id, XYZBranch, XYZDownElbow); SetDiameter(Branch);
+                    DownElbow = Pipe.CreatePlaceholder(document, elementId, pipeType.Id, level.Id, XYZDownElbow, XYZDown); SetDiameter(DownElbow);
+                    Down = Pipe.CreatePlaceholder(document, elementId, pipeType.Id, level.Id, XYZDown, Origin); SetDiameter(Down);
                 }
             }
             catch (Exception e)
@@ -280,46 +278,15 @@ namespace MEP_Addin
             
           
         }
-        public void CreatePipeFitting(Document document, Level level)
+       
+        public void SplitPipe(Document document, Pipe pipe, out Pipe NewPipe,out ElementId elementId)
         {
-            GetAllConnector();
-            if (ConnectorBranchElbow.Count != 0 && ConnectorBranch.Count != 0&& ConnectorDownElbow.Count!=0&& ConnectorDown.Count!=0)
-            {
-                try
-                {
-                    ElbowBranchElbow = document.Create.NewElbowFitting(ConnectorBranchElbow[ConnectorBranchElbow.Count - 1], ConnectorBranch[0]);
-                    ElbowDownBranch = document.Create.NewElbowFitting(ConnectorBranch[ConnectorBranch.Count - 1], ConnectorDownElbow[0]);
-                    ElbowUPDown = document.Create.NewElbowFitting(ConnectorDownElbow[ConnectorDownElbow.Count - 1], ConnectorDown[0]);
-                    ConnectorDown[ConnectorDown.Count - 1].ConnectTo(ConnectorOrigin);
-                    CreateBranchElbowTee(document, level);
-                }
-                catch (Exception e)
-                {
-
-                    System.Windows.Forms.MessageBox.Show(e.Message);
-                }
-                
-            }
-
+             elementId = PlumbingUtils.BreakCurve(document, pipe.Id, XYZBranchElbow);
+            Pipe p1 = document.GetElement(elementId) as Pipe;
+            NewPipe = (Math.Abs(p1.Id.IntegerValue) > Math.Abs(pipe.Id.IntegerValue)) ? pipe : p1;
+          
         }
-        private void CreateBranchElbowTee(Document document,Level level)
-        {
-            List<FamilySymbol> familySymbols = PipeFittingType.GetPipeFittingType(document, PipeFittingType.Tee);
-            familySymbols = familySymbols.Where(x => x.FamilyName.Equals("DSC_uPVC_Tee+Y_TienPhong")).ToList();
-            if (familySymbols.Count != 0)
-            {
-                FamilySymbol familySymbol = familySymbols.Where(x => x.Name.Equals("Standard")).FirstOrDefault();
-                if(familySymbol!=null)
-                {
-                    TeeElbowMain= document.Create.NewFamilyInstance(XYZBranchElbow, familySymbol, level,Autodesk.Revit.DB.Structure.StructuralType.NonStructural);
-                    TeeElbowMain.LookupParameter("DSC_NHT_Angle").Set(Math.PI*0.25);
-                    TeeElbowMain.LookupParameter("DSC_NHT_Nominal Diameter 2").Set(Diameter);
-                    TeeElbowMain.LookupParameter("DSC_NHT_Nominal Diameter 1").Set(DiameterMain);
-                }
-              
-            }
-        }
-
+      
         #endregion
 
 

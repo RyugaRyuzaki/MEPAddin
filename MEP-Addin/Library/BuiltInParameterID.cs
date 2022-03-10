@@ -15,5 +15,6 @@ namespace MEP_Addin.Library
         public static BuiltInParameter SlopeID = (BuiltInParameter)(-1140256);
         public static BuiltInParameter DiameterPipeID = (BuiltInParameter)(-1140225);
         public static BuiltInParameter FamilyInstanceLevelID = (BuiltInParameter)(-1001352);
+        public static BuiltInParameter PipeLevelID = (BuiltInParameter)(-1114000);
     }
 }
