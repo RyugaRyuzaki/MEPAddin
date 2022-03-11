@@ -34,6 +34,18 @@ namespace MEP_Addin.Library
             }
             return connectors;
         }
+        public static Connector GetConnectorPipeDefault(Pipe pipe)
+        {
+            ConnectorManager connectorManager = pipe.ConnectorManager;
+            ConnectorSet connectorSet = connectorManager.Connectors;
+            List<Connector> connectors = new List<Connector>();
+            foreach (var item in connectorSet)
+            {
+                Connector connector1 = item as Connector;
+                if (connector1 != null ) connectors .Add(connector1);
+            }
+            return connectors[0];
+        }
         public static Connector GetConnectorPipe(Pipe pipe,XYZ xYZ)
         {
             ConnectorManager connectorManager = pipe.ConnectorManager;

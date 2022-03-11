@@ -13,6 +13,7 @@ namespace MEP_Addin.Library
         public static PartType Tee = (PartType)(6);
         public static PartType Union = (PartType)(13);
         public static PartType Transition = (PartType)(7);
+        public static PartType Cap = (PartType)(9);
         private static List<Family> GetAllFamilyPipeFitting(Document document)
         {
             return new FilteredElementCollector(document).OfClass(typeof(Family)).Cast<Family>().Where(x => x.FamilyCategory.Name.Equals(Category.GetCategory(document, BuiltInCategoryID.PileFittingID).Name)).ToList();
@@ -31,6 +32,21 @@ namespace MEP_Addin.Library
                 }
             }
             return familySymbols;
+        }
+        public static FamilySymbol GetPipeFittingCapType(Document document)
+        {
+            List<Family> families = GetAllFamilyPipeFitting(document);
+            List<Family> elbowFamilies = new List<Family>(families.Where(x => x.get_Parameter(BuiltInParameterID.PartTypeID).AsInteger() == (int)Cap).ToList());
+            List<FamilySymbol> familySymbols = new List<FamilySymbol>();
+            foreach (var item in elbowFamilies)
+            {
+                foreach (var item1 in item.GetFamilySymbolIds())
+                {
+                    familySymbols.Add(item.Document.GetElement(item1) as FamilySymbol);
+
+                }
+            }
+            return familySymbols.Where(x => x.Name.Equals("Standard")).FirstOrDefault(); ;
         }
     }
 }

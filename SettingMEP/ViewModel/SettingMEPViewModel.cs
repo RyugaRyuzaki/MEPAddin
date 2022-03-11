@@ -2,7 +2,6 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace SettingMEP
     public class SettingMEPViewModel : BaseViewModel
     {
         public static BuiltInCategory PileFittingID = (BuiltInCategory)(-2008049);
-        
+
         public UIDocument UiDoc;
         public Document Doc;
 
@@ -67,16 +66,16 @@ namespace SettingMEP
             Doc = doc;
             Languages = new Languages("EN");
             TaskBarViewModel = new TaskBarViewModel();
-            
-            GetSaveModel();
+
+            SaveModel = SaveModel.GetSaveModel(Doc);
 
             LoadWindowCommand = new RelayCommand<SettingMEPWindow>((p) => { return true; }, (p) =>
-            {
-                SlantedVisibility = (SelectedMenu == 0) ? Visibility.Visible : Visibility.Collapsed;
-                TeeElbowVisibility = (SelectedMenu == 1) ? Visibility.Visible : Visibility.Collapsed;
-                LoadFamilyVisibility = (CoditionLoadFamily()) ? Visibility.Visible : Visibility.Collapsed;
-                Draw(p);
-            });
+           {
+               SlantedVisibility = (SelectedMenu == 0) ? Visibility.Visible : Visibility.Collapsed;
+               TeeElbowVisibility = (SelectedMenu == 1) ? Visibility.Visible : Visibility.Collapsed;
+               LoadFamilyVisibility = (CoditionLoadFamily()) ? Visibility.Visible : Visibility.Collapsed;
+               Draw(p);
+           });
             SelectionLanguageChangedCommand = new RelayCommand<SettingMEPWindow>((p) => { return true; }, (p) =>
             {
                 Languages.ChangedLanguage();
@@ -88,7 +87,20 @@ namespace SettingMEP
 
             CloseWindowCommand = new RelayCommand<SettingMEPWindow>((p) => { return true; }, (p) =>
             {
+                if ((SaveModel.HasSave == 0) && (System.Windows.Forms.MessageBox.Show("Do you want to save ?", "Save", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK))
+                {
+                    SaveFileAction();
+                }
+                else
+                {
+                    using (var stream = new FileStream(path: SaveModel.FilePathDefault(Doc), FileMode.OpenOrCreate))
+                    {
+
+                        SaveModel.SaveFile(stream);
+                    }
+                }
                
+                
                 p.DialogResult = true;
 
             });
@@ -97,12 +109,12 @@ namespace SettingMEP
             OpenCommand = new RelayCommand<SettingMEPWindow>((p) => { return true; }, (p) =>
             {
 
-                OpenFileAction(p);
+                OpenFileAction();
 
             });
             SaveCommand = new RelayCommand<SettingMEPWindow>((p) => { return true; }, (p) =>
             {
-                SaveFile(p);
+                SaveFileAction();
 
             });
             LoadFamilyCommand = new RelayCommand<SettingMEPWindow>((p) => { return true; }, (p) =>
@@ -115,61 +127,19 @@ namespace SettingMEP
 
         }
 
-        private void GetSaveModel()
-        {
 
-            if (!File.Exists(SaveModel.FilePathDefault(Doc)))
-            {
-                SaveModel = new SaveModel(2, 2, 2, 2, SaveModel.FilePathDefault(Doc));
-                using (var stream = new FileStream(path: SaveModel.FilePathDefault(Doc), FileMode.OpenOrCreate))
-                {
-                    SaveModel.SaveFile(stream, false);
-                }
-
-            }
-            else
-            {
-                string directory = "";
-                bool a = false;
-                using (var stream = new FileStream(path: SaveModel.FilePathDefault(Doc), FileMode.OpenOrCreate))
-                {
-
-                    a = SaveModel.IsHasSaveFile(stream, out directory);
-
-                }
-
-                if (a == false)
-                {
-                    using (var stream1 = new FileStream(path: SaveModel.FilePathDefault(Doc), FileMode.OpenOrCreate))
-                    {
-
-                        SaveModel = new SaveModel(stream1);
-
-                    }
-                }
-                else
-                {
-                    using (var stream1 = new FileStream(path: directory, FileMode.OpenOrCreate))
-                    {
-                        SaveModel = new SaveModel(stream1);
-                    }
-                }
-            }
-
-        }
-
-        private void OpenFileAction(SettingMEPWindow p)
+        private void OpenFileAction()
         {
 
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                
+
                 Title = "Browse Text Files",
                 DefaultExt = "dsp",
                 Filter = ".dsp files (*.dsp)|*.dsp",
                 RestoreDirectory = true,
             };
-           
+
             if (openFileDialog.ShowDialog() == true)
             {
                 using (var stream = new FileStream(path: openFileDialog.FileName, FileMode.OpenOrCreate))
@@ -180,11 +150,11 @@ namespace SettingMEP
 
         }
 
-        private void SaveFile(SettingMEPWindow p)
+        private void SaveFileAction()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-             
+
                 Title = "Browse Text Files",
                 DefaultExt = "dsp",
                 Filter = ".dsp files (*.dsp)|*.dsp",
@@ -196,8 +166,8 @@ namespace SettingMEP
                 SaveModel.Directory = saveFileDialog.FileName;
                 using (var stream = new FileStream(path: SaveModel.Directory, FileMode.OpenOrCreate))
                 {
-                    SaveModel.SaveFile(stream, true);
-                    if (File.Exists(SaveModel.FilePathDefault(Doc))) File.Delete(SaveModel.FilePathDefault(Doc));
+                    SaveModel.HasSave = 1;
+                    SaveModel.SaveFile(stream);
                 }
 
             }

@@ -36,6 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RevitAPI, Version=21.0.0.0, Culture=neutral, processorArchitecture=AMD64">
@@ -54,6 +58,10 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -65,7 +73,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command\ConnectPileToPlumbingFixtures.cs" />
+    <Compile Include="Command\PipeCapOpenEnd.cs" />
+    <Compile Include="Command\WaterCloset_Strength.cs" />
+    <Compile Include="Command\WaterCloset_Slanted.cs" />
     <Compile Include="Library\BuiltInCategoryID.cs" />
     <Compile Include="Library\BuiltInParameterID.cs" />
     <Compile Include="Library\CalculatePipeLocation.cs" />
@@ -78,6 +88,13 @@
     <Compile Include="Library\PointModel.cs" />
     <Compile Include="Model\PlumbingFixtureModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SettingMEP\SettingMEP.csproj">
+      <Project>{eb678d3e-8091-4526-bd44-8372eb3259d5}</Project>
+      <Name>SettingMEP</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

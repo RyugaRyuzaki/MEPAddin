@@ -15,7 +15,7 @@
         Topmost="false"
         FontSize="11"
         FontFamily="Tahoma"
-        Background="White"
+        Background="#f0ebeb"
         WindowStyle="None"
         AllowsTransparency="True"
         >
@@ -103,12 +103,12 @@
                         </Grid>
                     </StackPanel>
                 </GroupBox>
-                <Canvas Grid.Column="1" x:Name="MainCanvas">
+                <Canvas Grid.Column="1" x:Name="MainCanvas" Background="White">
                     <!--<Rectangle Width="300" Height="240"></Rectangle>-->
                 </Canvas>
                 
             </Grid>
-            <DockPanel Grid.Row="2" Margin="0" LastChildFill="False">
+            <DockPanel Grid.Row="2"  LastChildFill="False" Background="White">
                 <Button DockPanel.Dock="Right" Width="60" Style="{StaticResource ButtonModifyStyle}" Content="{Binding Languages.Save,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=MainWindow}"></Button>
                 <Button DockPanel.Dock="Right" Width="60" Style="{StaticResource ButtonModifyStyle}" Content="{Binding Languages.Open,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Command="{Binding OpenCommand}" CommandParameter="{Binding ElementName=MainWindow}"></Button>
                 

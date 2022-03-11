@@ -31,10 +31,11 @@ namespace SettingMEP
         {
             S1 = s1;S2 = s2;D1 = d1;D2 = d2;  Directory = directory;
         }
-       
-        public void SaveFile(Stream stream,bool isSave)
+
+        #region Method
+        public void SaveFile(Stream stream)
         {
-            HasSave = isSave?1:0;
+
             var byteHasSave = BitConverter.GetBytes(HasSave);
             stream.Write(byteHasSave, 0, 4);
             var byteDirectory = Encoding.UTF8.GetBytes(Directory);
@@ -50,7 +51,7 @@ namespace SettingMEP
             var byteD2 = BitConverter.GetBytes(D2);
             stream.Write(byteD2, 0, 8);
         }
-        public static bool IsHasSaveFile(Stream stream,out string directory)
+        public static bool IsHasSaveFile(Stream stream, out string directory)
         {
             var byteHasSave = new byte[4];
             stream.Read(byteHasSave, 0, 4);
@@ -60,7 +61,7 @@ namespace SettingMEP
             var byteDirectory = new byte[lengthDirectory];
             stream.Read(byteDirectory, 0, lengthDirectory);
             directory = Encoding.UTF8.GetString(byteDirectory, 0, lengthDirectory);
-            return BitConverter.ToInt32(byteHasSave, 0)!=0;
+            return BitConverter.ToInt32(byteHasSave, 0) != 0;
         }
         public SaveModel(Stream stream)
         {
@@ -77,7 +78,7 @@ namespace SettingMEP
 
             var byteS1 = new byte[8];
             stream.Read(byteS1, 0, 8);
-            S1 = BitConverter.ToDouble(byteS1,0);
+            S1 = BitConverter.ToDouble(byteS1, 0);
             var byteS2 = new byte[8];
             stream.Read(byteS2, 0, 8);
             S2 = BitConverter.ToDouble(byteS2, 0);
@@ -88,5 +89,51 @@ namespace SettingMEP
             stream.Read(byteD2, 0, 8);
             D2 = BitConverter.ToDouble(byteD2, 0);
         }
+        #endregion
+        public static SaveModel GetSaveModel(Document document)
+        {
+            SaveModel save;
+            if (!File.Exists(FilePathDefault(document)))
+            {
+                save= new SaveModel(2, 2, 2, 2, FilePathDefault(document));
+                using (var stream = new FileStream(path: FilePathDefault(document), FileMode.OpenOrCreate))
+                {
+                    save.HasSave = 0;
+                    save.SaveFile(stream);
+                }
+
+            }
+            else
+            {
+                string directory = "";
+                bool a = false;
+                using (var stream = new FileStream(path: FilePathDefault(document), FileMode.OpenOrCreate))
+                {
+
+                    a = IsHasSaveFile(stream, out directory);
+
+                }
+
+                if (a == false)
+                {
+                    using (var stream1 = new FileStream(path: FilePathDefault(document), FileMode.OpenOrCreate))
+                    {
+
+                        save = new SaveModel(stream1);
+
+                    }
+                }
+                else
+                {
+                    using (var stream1 = new FileStream(path: directory, FileMode.OpenOrCreate))
+                    {
+                        save = new SaveModel(stream1);
+                    }
+                }
+            }
+            return save;
+
+        }
+
     }
 }
